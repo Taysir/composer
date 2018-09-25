@@ -56,7 +56,7 @@ class GitDriver extends VcsDriver
                 throw new \InvalidArgumentException('The source URL '.$this->url.' is invalid, ssh URLs should have a port number after ":".'."\n".'Use ssh://git@example.com:22/path or just git@example.com:path if you do not want to provide a password or custom port.');
             }
 
-            $gitUtil = new GitUtil($this->io, $this->config, $this->process, $fs);
+            $gitUtil = new GitUtil($this->io, $this->config, $this->process, $fs, $this->repoConfig);
             if (!$gitUtil->syncMirror($this->url, $this->repoDir)) {
                 $this->io->writeError('<error>Failed to update '.$this->url.', package information from this repository may be outdated</error>');
             }

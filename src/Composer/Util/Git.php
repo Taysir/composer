@@ -30,19 +30,22 @@ class Git
     protected $process;
     /** @var Filesystem */
     protected $filesystem;
+    /** @var array */
+    protected $repoConfig;
 
-    public function __construct(IOInterface $io, Config $config, ProcessExecutor $process, Filesystem $fs)
+    public function __construct(IOInterface $io, Config $config, ProcessExecutor $process, Filesystem $fs, array $repoConfig = array())
     {
         $this->io = $io;
         $this->config = $config;
         $this->process = $process;
         $this->filesystem = $fs;
+        $this->repoConfig = $repoConfig;
     }
 
     public function runCommand($commandCallable, $url, $cwd, $initialClone = false)
     {
         // Ensure we are allowed to use this URL by config
-        $this->config->prohibitUrlByConfig($url, $this->io);
+        $this->config->prohibitUrlByConfig($url, $this->io, $this->repoConfig);
 
         if ($initialClone) {
             $origCwd = $cwd;

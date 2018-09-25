@@ -430,8 +430,9 @@ class Config
      *
      * @param string      $url
      * @param IOInterface $io
+     * @param array       $repoConfig
      */
-    public function prohibitUrlByConfig($url, IOInterface $io = null)
+    public function prohibitUrlByConfig($url, IOInterface $io = null, array $repoConfig = array())
     {
         // Return right away if the URL is malformed or custom (see issue #5173)
         if (false === filter_var($url, FILTER_VALIDATE_URL)) {
@@ -441,7 +442,8 @@ class Config
         // Extract scheme and throw exception on known insecure protocols
         $scheme = parse_url($url, PHP_URL_SCHEME);
         if (in_array($scheme, array('http', 'git', 'ftp', 'svn'))) {
-            if ($this->get('secure-http')) {
+            $secureHttp = isset($repoConfig['secure-http']) ? $repoConfig['secure-http'] : $this->get('secure-http');
+            if ($secureHttp) {
                 throw new TransportException("Your configuration does not allow connections to $url. See https://getcomposer.org/doc/06-config.md#secure-http for details.");
             } elseif ($io) {
                 $host = parse_url($url, PHP_URL_HOST);
